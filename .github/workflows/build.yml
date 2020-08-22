@@ -7,7 +7,6 @@ on:
     branches: [ master ]
 
 jobs:
-
   build:
     name: Build
     strategy:
@@ -23,8 +22,21 @@ jobs:
         go-version: ${{ matrix.version }}
       id: go
 
-    - name: Check out code into the Go module directory
+    - name: Check out code
       uses: actions/checkout@v2
-      
-    - name: Build
+    - name: Build binary
       run: make ghostunnel
+    - name: Unit tests (local)
+      run: make unit
+      
+  integration:
+    name: Integration tests
+    strategy:
+      matrix:
+        version: [1.15]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Integration tests (container)
+        run: GO_VERSION=${{ matrix.version }} make docker-test
+    
