@@ -19,8 +19,6 @@ package socket
 import (
 	"net"
 	"strings"
-
-	reuseport "github.com/kavu/go_reuseport"
 )
 
 // ParseAddress parses a string representing a TCP address or UNIX socket
@@ -111,7 +109,7 @@ func Open(network, address string) (net.Listener, error) {
 		listener.(*net.UnixListener).SetUnlinkOnClose(true)
 		return listener, nil
 	default:
-		return reuseport.NewReusablePortListener(network, address)
+		return net.Listen("tcp", address)
 	}
 }
 
